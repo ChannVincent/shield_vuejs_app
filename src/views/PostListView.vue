@@ -60,111 +60,108 @@ const toggleImageExpand = (post) => {
 
 <template>
   <div class="container mx-auto py-4">
-    <!-- Post Form -->
-    <div class="bg-white shadow-md rounded-md p-4 mb-6">
-      <textarea
-        v-model="text"
-        placeholder="What's on your mind?"
-        class="w-full p-2 border rounded-md resize-none focus:outline-none focus:ring focus:ring-blue-300"
-        rows="3"
-      ></textarea>
+    <div class="flex justify-center">
+      <!-- Wrapper for Post Form and Feed -->
+      <div class="w-full lg:w-1/2 max-w-lg">
+        <!-- Post Form -->
+        <div class="bg-white shadow-md rounded-md p-4 mb-6">
+          <textarea
+            v-model="text"
+            placeholder="What's on your mind?"
+            class="w-full p-2 border rounded-md resize-none focus:outline-none focus:ring focus:ring-blue-300"
+            rows="3"
+          ></textarea>
 
-      <div class="mt-4 flex items-center justify-between">
-        <!-- File Input for Image/Video -->
-        <input
-          type="file"
-          accept="image/*,video/*"
-          @change="handleMediaChange"
-          class="hidden"
-          id="mediaInput"
-        />
-        <label
-          for="mediaInput"
-          class="cursor-pointer text-blue-500 hover:underline"
-        >
-          Choose Image/Video
-        </label>
-
-        <!-- Camera Button (Mobile Only) -->
-        <button
-          v-if="isMobile"
-          @click="captureImage"
-          class="cursor-pointer text-blue-500 hover:underline"
-        >
-          Use Camera
-        </button>
-
-        <!-- Post Button -->
-        <button
-          @click="handlePost"
-          class="flex items-center bg-blue-500 text-white px-4 py-2 rounded-md shadow hover:bg-blue-600 focus:ring focus:ring-blue-300"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="w-5 h-5 mr-2"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M12 4.5v15m7.5-7.5h-15"
+          <div class="mt-4 flex items-center justify-between">
+            <!-- File Input for Image/Video -->
+            <input
+              type="file"
+              accept="image/*,video/*"
+              @change="handleMediaChange"
+              class="hidden"
+              id="mediaInput"
             />
-          </svg>
-          Post
-        </button>
-      </div>
+            <label
+              for="mediaInput"
+              class="cursor-pointer text-blue-500 hover:underline"
+            >
+              Choose Image/Video
+            </label>
 
-      <!-- Image Preview -->
-      <div v-if="mediaPreview" class="mt-4">
-        <p>Preview:</p>
-        <div v-if="mediaType.startsWith('image/')" class="relative">
-          <img
-            :src="mediaPreview"
-            alt="Preview"
-            class="rounded-md max-w-full h-auto"
-            :class="{'h-48 object-cover': mediaPreview && mediaPreview.length > 1000}" 
-          />
-          <button
-            v-if="mediaPreview.length > 1000"
-            @click="toggleImageExpand(post)"
-            class="absolute top-2 right-2 bg-gray-500 text-white text-xs px-2 py-1 rounded-md"
-          >
-            {{ post.isExpanded ? 'Collapse' : 'Expand' }}
-          </button>
+            <!-- Camera Button (Mobile Only) -->
+            <button
+              v-if="isMobile"
+              @click="captureImage"
+              class="cursor-pointer text-blue-500 hover:underline"
+            >
+              Use Camera
+            </button>
+
+            <!-- Post Button -->
+            <button
+              @click="handlePost"
+              class="flex items-center bg-blue-500 text-white px-4 py-2 rounded-md shadow hover:bg-blue-600 focus:ring focus:ring-blue-300"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-5 h-5 mr-2"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+              Post
+            </button>
+          </div>
+
+          <!-- Image Preview -->
+          <div v-if="mediaPreview" class="mt-4">
+            <p>Preview:</p>
+            <div v-if="mediaType.startsWith('image/')" class="relative">
+              <img
+                :src="mediaPreview"
+                alt="Preview"
+                class="rounded-md max-w-full h-auto"
+              />
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
 
-    <!-- Feed -->
-    <div class="space-y-4">
-      <div
-        v-for="post in posts"
-        :key="post.id"
-        class="bg-white shadow-md rounded-md p-4"
-      >
-        <p v-if="post.text" class="mb-2">{{ post.text }}</p>
-        <div v-if="post.media" class="mt-2">
-          <img
-            v-if="post.mediaType.startsWith('image/')"
-            :src="post.media"
-            alt="Posted media"
-            :class="{
-              'max-h-60 object-cover': !post.isExpanded,
-              'max-h-none': post.isExpanded
-            }"
-            class="rounded-md max-w-full"
-          />
-          <video
-            v-else-if="post.mediaType.startsWith('video/')"
-            controls
-            class="rounded-md max-w-full"
+        <!-- Feed -->
+        <div class="space-y-4">
+          <div
+            v-for="post in posts"
+            :key="post.id"
+            class="bg-white shadow-md rounded-md p-4"
           >
-            <source :src="post.media" :type="post.mediaType" />
-            Your browser does not support the video tag.
-          </video>
+            <p v-if="post.text" class="mb-2">{{ post.text }}</p>
+            <div v-if="post.media" class="mt-2">
+              <img
+                v-if="post.mediaType.startsWith('image/')"
+                :src="post.media"
+                alt="Posted media"
+                :class="{
+                  'max-h-60 object-cover': !post.isExpanded,
+                  'max-h-none': post.isExpanded
+                }"
+                class="rounded-md max-w-full"
+              />
+              <video
+                v-else-if="post.mediaType.startsWith('video/')"
+                controls
+                class="rounded-md max-w-full"
+              >
+                <source :src="post.media" :type="post.mediaType" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
         </div>
       </div>
     </div>
