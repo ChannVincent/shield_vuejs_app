@@ -11,8 +11,8 @@
             />
           </div>
           <div class="m-auto">
-            <RouterLink :to="{ name: 'BusinessListView' }">
-                  <p class="text-2xl">PEA screener</p>
+            <RouterLink :to="{ name: 'PostListView' }">
+                  <p class="text-2xl">Bussy Saint Georges</p>
             </RouterLink>
           </div>
           <div 

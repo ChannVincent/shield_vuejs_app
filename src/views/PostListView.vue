@@ -42,7 +42,7 @@
       }
     },
     mounted () {
-      this.businesses()
+
     },
     methods: {
       businesses() {
