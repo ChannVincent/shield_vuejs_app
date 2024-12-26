@@ -59,7 +59,7 @@ const toggleImageExpand = (post) => {
 </script>
 
 <template>
-  <div class="p-4 max-w-lg mx-auto">
+  <div class="container mx-auto py-4">
     <!-- Post Form -->
     <div class="bg-white shadow-md rounded-md p-4 mb-6">
       <textarea
