@@ -1,68 +1,8 @@
-<script setup>
-import { ref, watch } from 'vue';
-
-const posts = ref([]);
-const text = ref('');
-const media = ref(null);
-const mediaPreview = ref(null);
-const mediaType = ref(null);
-const isMobile = ref(false);
-
-const handlePost = () => {
-  if (!text.value.trim() && !media.value) return;
-
-  const newPost = {
-    id: Date.now(),
-    text: text.value,
-    media: media.value ? URL.createObjectURL(media.value) : null,
-    mediaType: media.value ? media.value.type : null,
-    mediaPreview: mediaPreview.value,
-  };
-
-  posts.value.unshift(newPost);
-  text.value = '';
-  media.value = null;
-  mediaPreview.value = null;
-};
-
-const handleMediaChange = (event) => {
-  const file = event.target.files[0];
-  if (file && (file.type.startsWith('image/') || file.type.startsWith('video/'))) {
-    media.value = file;
-    mediaPreview.value = URL.createObjectURL(file);
-    mediaType.value = file.type;
-  } else {
-    alert('Please select an image or video file.');
-  }
-};
-
-// Camera capture button for mobile devices
-const captureImage = () => {
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'image/*';
-  input.capture = 'camera';
-  input.onchange = (e) => {
-    handleMediaChange(e);
-  };
-  input.click();
-};
-
-// Watch for mobile device detection
-watch(() => window.innerWidth, () => {
-  isMobile.value = window.innerWidth <= 768;
-}, { immediate: true });
-
-const toggleImageExpand = (post) => {
-  post.isExpanded = !post.isExpanded;
-};
-</script>
-
 <template>
   <div class="container mx-auto py-4">
     <div class="flex justify-center">
       <!-- Wrapper for Post Form and Feed -->
-      <div class="w-full lg:w-1/2 max-w-lg">
+      <div class="w-full max-w-lg">
         <!-- Post Form -->
         <div class="bg-white shadow-md rounded-md p-4 mb-6">
           <textarea
@@ -83,18 +23,28 @@ const toggleImageExpand = (post) => {
             />
             <label
               for="mediaInput"
-              class="cursor-pointer text-blue-500 hover:underline"
+              class="cursor-pointer"
+              title="Choose Image/Video"
             >
-              Choose Image/Video
+              <span
+                class="material-icons text-blue-500 hover:text-blue-600 text-4xl"
+              >
+                add_photo_alternate
+              </span>
             </label>
 
             <!-- Camera Button (Mobile Only) -->
             <button
               v-if="isMobile"
               @click="captureImage"
-              class="cursor-pointer text-blue-500 hover:underline"
+              class="cursor-pointer"
+              title="Use Camera"
             >
-              Use Camera
+              <span
+                class="material-icons text-blue-500 hover:text-blue-600 text-4xl"
+              >
+                photo_camera
+              </span>
             </button>
 
             <!-- Post Button -->
@@ -102,20 +52,9 @@ const toggleImageExpand = (post) => {
               @click="handlePost"
               class="flex items-center bg-blue-500 text-white px-4 py-2 rounded-md shadow hover:bg-blue-600 focus:ring focus:ring-blue-300"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-5 h-5 mr-2"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M12 4.5v15m7.5-7.5h-15"
-                />
-              </svg>
+              <span class="material-icons text-white mr-2">
+                send
+              </span>
               Post
             </button>
           </div>
@@ -142,16 +81,31 @@ const toggleImageExpand = (post) => {
           >
             <p v-if="post.text" class="mb-2">{{ post.text }}</p>
             <div v-if="post.media" class="mt-2">
-              <img
-                v-if="post.mediaType.startsWith('image/')"
-                :src="post.media"
-                alt="Posted media"
-                :class="{
-                  'max-h-60 object-cover': !post.isExpanded,
-                  'max-h-none': post.isExpanded
-                }"
-                class="rounded-md max-w-full"
-              />
+              <!-- Image Handling -->
+              <template v-if="post.mediaType.startsWith('image/')">
+                <img
+                  :src="post.media"
+                  alt="Posted media"
+                  :class="{
+                    'w-full h-60 object-cover': !post.isExpanded,
+                    'w-full h-auto': post.isExpanded
+                  }"
+                  class="rounded-md"
+                  style="object-fit: cover; aspect-ratio: 1 / 1;"
+                />
+                <button
+                  @click="toggleImageExpand(post)"
+                  class="flex justify-center w-full mt-1"
+                  title="Expand/Collapse"
+                >
+                  <span
+                    class="material-icons text-blue-500 hover:text-blue-600 text-4xl"
+                  >
+                    {{ post.isExpanded ? 'expand_less' : 'expand_more' }}
+                  </span>
+                </button>
+              </template>
+              <!-- Video Handling -->
               <video
                 v-else-if="post.mediaType.startsWith('video/')"
                 controls
@@ -167,6 +121,71 @@ const toggleImageExpand = (post) => {
     </div>
   </div>
 </template>
+
+
+<script setup>
+import { ref, watch } from 'vue';
+
+const posts = ref([]);
+const text = ref('');
+const media = ref(null);
+const mediaPreview = ref(null);
+const mediaType = ref(null);
+const isMobile = ref(false);
+
+const handlePost = () => {
+  if (!text.value.trim() && !media.value) return;
+
+  const newPost = {
+    id: Date.now(),
+    text: text.value,
+    media: media.value ? URL.createObjectURL(media.value) : null,
+    mediaType: media.value ? media.value.type : null,
+    mediaPreview: mediaPreview.value,
+    isExpanded: false, // Default state for image/video
+  };
+
+  posts.value.unshift(newPost);
+  text.value = '';
+  media.value = null;
+  mediaPreview.value = null;
+};
+
+const handleMediaChange = (event) => {
+  const file = event.target.files[0];
+  if (file && (file.type.startsWith('image/') || file.type.startsWith('video/'))) {
+    media.value = file;
+    mediaPreview.value = URL.createObjectURL(file);
+    mediaType.value = file.type;
+  } else {
+    alert('Please select an image or video file.');
+  }
+};
+
+const captureImage = () => {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.capture = 'camera';
+  input.onchange = (e) => {
+    handleMediaChange(e);
+  };
+  input.click();
+};
+
+// Watch for mobile device detection
+watch(
+  () => window.innerWidth,
+  () => {
+    isMobile.value = window.innerWidth <= 768;
+  },
+  { immediate: true }
+);
+
+const toggleImageExpand = (post) => {
+  post.isExpanded = !post.isExpanded;
+};
+</script>
 
 <style scoped>
 /* Optional: Add custom styles if necessary */
