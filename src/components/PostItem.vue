@@ -50,9 +50,20 @@
   const toggleImageExpand = () => {
     props.post.isExpanded = !props.post.isExpanded;
   };
+
+  ref({
+    chartData: {
+      labels: ["2024-12-20", "2024-12-21", "2024-12-22", "2024-12-23", "2024-12-24", "2024-12-25", "2024-12-26"],
+      datasets: [
+        {
+          label: "User Activity",
+          data: [10, 15, 12, 8, 20, 25, 30],
+          backgroundColor: "rgba(75, 192, 192, 0.2)",
+          borderColor: "rgba(75, 192, 192, 1)",
+          borderWidth: 1,
+        },
+      ],
+    },
+  })
   </script>
-  
-  <style scoped>
-  /* Optional: Add custom styles if necessary */
-  </style>
   
