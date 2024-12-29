@@ -1,12 +1,11 @@
 <template>
     <div class="bg-white shadow-md rounded-md pt-4 px-4">
         <p v-if="post.text">{{ post.text }}</p>
-        <div v-if="!post.media" class="pb-4"></div>
-        <div v-if="post.media" class="mt-2">
+        <div v-if="!post.image" class="pb-4"></div>
+        <div v-if="post.image" class="mt-2">
             <!-- Image Handling -->
-            <template v-if="post.mediaType.startsWith('image/')">
             <img
-                :src="post.media"
+                :src="'http://localhost:8000/media/' + post.image"
                 alt="Posted media"
                 :class="{
                 'w-full h-60 object-cover': !post.isExpanded,
@@ -26,16 +25,6 @@
                 {{ post.isExpanded ? 'expand_less' : 'expand_more' }}
                 </span>
             </button>
-            </template>
-            <!-- Video Handling -->
-            <video
-            v-else-if="post.mediaType.startsWith('video/')"
-            controls
-            class="rounded-md max-w-full"
-            >
-            <source :src="post.media" :type="post.mediaType" />
-            Your browser does not support the video tag.
-            </video>
         </div>
     </div>
   </template>
