@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white shadow-md rounded-md pt-4 px-4">
-    <p v-if="post.text">{{ post.text }}</p>
+    <p v-if="post.title">{{ post.title }}</p>
     
     <!-- Chart Section -->
     <div v-if="post.json_data" class="pt-4">
