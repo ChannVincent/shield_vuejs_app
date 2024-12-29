@@ -66,8 +66,8 @@ onMounted(() => {
           {
             label: props.post.text,
             data: factsValues,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
+            backgroundColor: props.post.color,
+            borderColor: props.post.color,
             borderWidth: 1,
           },
         ],
