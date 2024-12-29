@@ -99,23 +99,23 @@ onUnmounted(() => {
 
 // Handle post creation
 const handlePost = async () => {
-  if (!text.value.trim()) {
-    alert("Post content can't be empty.");
+  if (!text.value.trim() && !media.value) {
+    alert("Post content or image can't be empty.");
     return;
   }
 
-  const newPost = {
-    commune: 2, // Commune ID set to 2
-    title: text.value.trim().slice(0, 50), // Use the first 50 characters as the title
-    text: text.value,
-    json_data: media.value ? { mediaType: mediaType.value } : {}, // Optional JSON metadata
-  };
+  const formData = new FormData();
+  formData.append('commune', 2); // Commune ID set to 2
+  formData.append('title', text.value.trim().slice(0, 50)); // Use first 50 characters as the title
+  formData.append('text', text.value); // Post text
+  if (media.value) {
+    formData.append('image', media.value); // Attach the image file if it exists
+  }
 
   try {
-    // Send JSON POST request to the backend
-    const response = await axios.post('http://localhost:8000/posts/create/', newPost, {
+    const response = await axios.post('http://localhost:8000/posts/create/', formData, {
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'multipart/form-data', // Ensure the request is sent as multipart/form-data
       },
     });
 
