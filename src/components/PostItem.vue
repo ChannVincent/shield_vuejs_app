@@ -64,7 +64,7 @@ onMounted(() => {
         labels: years,
         datasets: [
           {
-            label: 'Usage de stupéfiants - Mis en cause',
+            label: props.post.text,
             data: factsValues,
             backgroundColor: 'rgba(75, 192, 192, 0.2)',
             borderColor: 'rgba(75, 192, 192, 1)',
