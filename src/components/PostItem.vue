@@ -4,7 +4,7 @@
     
     <!-- Chart Section -->
     <div v-if="post.json_data" class="pt-4">
-      <canvas id="myChart" width="400" height="200"></canvas>
+        <canvas ref="chartCanvas" width="400" height="200"></canvas>
     </div>
     
     <div v-if="!post.image" class="pb-4"></div>
@@ -35,35 +35,37 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import Chart from 'chart.js/auto'; // Import Chart.js
+import Chart from 'chart.js/auto';
 
 const props = defineProps({
   post: Object,
 });
 
-// Function to toggle image expand
+const chartCanvas = ref(null); // Create a ref for the canvas
+
 const toggleImageExpand = () => {
   props.post.isExpanded = !props.post.isExpanded;
 };
 
-// Chart setup
 onMounted(() => {
-  const ctx = document.getElementById('myChart').getContext('2d');
-  
-  if (props.post.json_data) {
-    // Data extraction from post
-    const jsonData = JSON.parse(props.post.json_data); // Assuming your data is in JSON format
-    const years = jsonData.map(item => item.year);
-    const factsValues = jsonData.map(item => parseFloat(item.facts_value));
+  if (chartCanvas.value && props.post.json_data) {
+    // Access the canvas element via the ref
+    const ctx = chartCanvas.value.getContext('2d');
 
+    // Parse the JSON data
+    const jsonData = JSON.parse(props.post.json_data);
+    const years = jsonData.map((item) => item.year);
+    const factsValues = jsonData.map((item) => parseFloat(item.facts_value));
+
+    // Create the chart
     new Chart(ctx, {
-      type: 'line', // You can change this to 'bar' or other types as needed
+      type: 'line', // Chart type
       data: {
-        labels: years, // Years as the x-axis
+        labels: years,
         datasets: [
           {
-            label: 'Usage de stupéfiants - Facts Value',
-            data: factsValues, // Facts value for the y-axis
+            label: 'Usage de stupéfiants - Mis en cause',
+            data: factsValues,
             backgroundColor: 'rgba(75, 192, 192, 0.2)',
             borderColor: 'rgba(75, 192, 192, 1)',
             borderWidth: 1,
@@ -79,6 +81,5 @@ onMounted(() => {
       },
     });
   }
-  
 });
 </script>
