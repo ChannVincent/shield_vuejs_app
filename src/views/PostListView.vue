@@ -7,9 +7,7 @@
         <PostForm @createPost="addPost" />
 
         <!-- Spinner -->
-        <div v-if="loading" class="flex justify-center items-center">
-          <div class="spinner"></div>
-        </div>
+        <Spinner v-if="loading" />
 
         <!-- Feed -->
         <div v-else class="space-y-4">
@@ -28,23 +26,24 @@
 import { ref, onMounted } from 'vue';
 import PostForm from '@/components/PostForm.vue';
 import PostItem from '@/components/PostItem.vue';
+import Spinner from '@/components/Spinner.vue';
 import axios from 'axios';
 
 // TODO put in store
-const commune_id = 0
+const commune_id = 2;
 
 const posts = ref([]);
 const loading = ref(true);
 
 // Add new post to the posts array
 const addPost = (newPost) => {
-  posts.value.unshift(newPost);
+  fetchPosts();
 };
 
 // Fetch posts from the API
 const fetchPosts = async () => {
   try {
-    const response = await axios.get('http://localhost:8000/posts/?commune_id=0');
+    const response = await axios.get('http://localhost:8000/posts/?commune_id=' + commune_id);
     posts.value = response.data;
   } catch (error) {
     console.error('Failed to fetch posts:', error);
@@ -58,23 +57,3 @@ onMounted(() => {
   fetchPosts();
 });
 </script>
-
-<style>
-.spinner {
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #3498db;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-</style>

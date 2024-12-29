@@ -64,6 +64,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import axios from 'axios';
 
 // Props and emits
 const emit = defineEmits(['createPost']);
@@ -97,24 +98,40 @@ onUnmounted(() => {
 });
 
 // Handle post creation
-const handlePost = () => {
-  if (!text.value.trim() && !media.value) return;
+const handlePost = async () => {
+  if (!text.value.trim()) {
+    alert("Post content can't be empty.");
+    return;
+  }
 
   const newPost = {
-    id: Date.now(),
+    commune: 2, // Commune ID set to 2
+    title: text.value.trim().slice(0, 50), // Use the first 50 characters as the title
     text: text.value,
-    media: media.value ? URL.createObjectURL(media.value) : null,
-    mediaType: media.value ? media.value.type : null,
-    isExpanded: false, // Default state for image/video
+    json_data: media.value ? { mediaType: mediaType.value } : {}, // Optional JSON metadata
   };
 
-  // Emit the created post to the parent
-  emit('createPost', newPost);
+  try {
+    // Send JSON POST request to the backend
+    const response = await axios.post('http://localhost:8000/posts/create/', newPost, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
-  // Clear the form
-  text.value = '';
-  media.value = null;
-  mediaPreview.value = null;
+    // Emit the created post to the parent component
+    emit('createPost', { id: response.data.post_id, ...response.data });
+
+    // Clear the form
+    text.value = '';
+    media.value = null;
+    mediaPreview.value = null;
+
+    alert('Post created successfully!');
+  } catch (error) {
+    console.error('Error creating post:', error.response ? error.response.data : error.message);
+    alert('Failed to create post. Please try again.');
+  }
 };
 
 // Handle media change
@@ -141,7 +158,3 @@ const captureImage = () => {
   input.click();
 };
 </script>
-
-<style scoped>
-/* Optional: Add custom styles if necessary */
-</style>
