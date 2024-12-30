@@ -1,12 +1,12 @@
 <template>
   <div class="bg-white shadow-md rounded-md pt-4 px-4">
     <p v-if="post.title">{{ post.title }}</p>
-    
+
     <!-- Chart Section -->
     <div v-if="post.json_data" class="pt-4">
-        <canvas ref="chartCanvas" width="400" height="200"></canvas>
+      <canvas ref="chartCanvas" width="400" height="200"></canvas>
     </div>
-    
+
     <div v-if="!post.image" class="pb-4"></div>
     <div v-if="post.image" class="mt-2">
       <!-- Image Handling -->
@@ -14,13 +14,14 @@
         :src="'http://localhost:8000/media/' + post.image"
         alt="Posted media"
         :class="{
-          'w-full h-60 object-cover': !post.isExpanded,
-          'w-full h-auto': post.isExpanded
+          'w-full h-auto': imageWidth >= imageHeight,
+          'w-full aspect-square object-cover': imageWidth < imageHeight && !post.isExpanded,
+          'w-full h-auto': imageWidth < imageHeight && post.isExpanded,
         }"
         class="rounded-md"
-        style="object-fit: cover; aspect-ratio: 1 / 1;"
       />
       <button
+        v-if="imageWidth < imageHeight"
         @click="toggleImageExpand"
         class="flex justify-center w-full"
         title="Expand/Collapse"
@@ -29,6 +30,7 @@
           {{ post.isExpanded ? 'expand_less' : 'expand_more' }}
         </span>
       </button>
+      <div v-else class="p-2"></div>
     </div>
   </div>
 </template>
@@ -42,24 +44,43 @@ const props = defineProps({
 });
 
 const chartCanvas = ref(null); // Create a ref for the canvas
+const imageWidth = ref(0);
+const imageHeight = ref(0);
 
 const toggleImageExpand = () => {
   props.post.isExpanded = !props.post.isExpanded;
 };
 
-onMounted(() => {
+const loadImageDimensions = async (imageSrc) => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      resolve({ width: img.width, height: img.height });
+    };
+    img.src = imageSrc;
+  });
+};
+
+onMounted(async () => {
+  // Load image dimensions
+  if (props.post.image) {
+    const { width, height } = await loadImageDimensions(
+      `http://localhost:8000/media/${props.post.image}`
+    );
+    imageWidth.value = width;
+    imageHeight.value = height;
+  }
+
+  // Render chart if JSON data is available
   if (chartCanvas.value && props.post.json_data) {
-    // Access the canvas element via the ref
     const ctx = chartCanvas.value.getContext('2d');
 
-    // Parse the JSON data
     const jsonData = JSON.parse(props.post.json_data);
     const years = jsonData.map((item) => item.year);
     const factsValues = jsonData.map((item) => parseFloat(item.facts_value));
 
-    // Create the chart
     new Chart(ctx, {
-      type: 'line', // Chart type
+      type: 'line',
       data: {
         labels: years,
         datasets: [
