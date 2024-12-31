@@ -1,15 +1,17 @@
 <template>
   <div class="bg-white shadow-md rounded-md pt-4 px-4">
-    <p v-if="post.title">{{ post.title }}</p>
+    <!-- Text Section -->
+    <p class="text-lg" v-if="post.title">{{ post.title }}</p>
+    <p class="mt-3 ml-3" v-if="post.text">{{ post.text }}</p>
 
     <!-- Chart Section -->
     <div v-if="post.json_data" class="pt-4">
       <canvas ref="chartCanvas" width="400" height="200"></canvas>
     </div>
 
+    <!-- Image Section -->
     <div v-if="!post.image" class="pb-4"></div>
     <div v-if="post.image" class="mt-2">
-      <!-- Image Handling -->
       <img
         :src="'http://localhost:8000/media/' + post.image"
         alt="Posted media"
@@ -32,6 +34,7 @@
       </button>
       <div v-else class="p-2"></div>
     </div>
+    
   </div>
 </template>
 
