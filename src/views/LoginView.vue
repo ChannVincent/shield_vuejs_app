@@ -4,11 +4,11 @@
         <h2 class="text-2xl font-bold mb-4 text-gray-800 text-center">Login</h2>
         <form @submit.prevent="handleLogin">
           <div class="mb-4">
-            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+            <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
             <input
-              id="email"
-              v-model="email"
-              type="email"
+              id="username"
+              v-model="username"
+              type="text"
               required
               class="mt-1 block w-full px-3 py-2 border rounded-lg text-gray-700 shadow-sm focus:ring-blue-500 focus:border-blue-500"
             />
@@ -32,30 +32,38 @@
             <span v-else>Login</span>
           </button>
         </form>
-        <p class="mt-4 text-sm text-center text-gray-600">
-          Don't have an account?
-          <a href="/register" class="text-blue-600 hover:underline">Register here</a>.
-        </p>
+        <p v-if="error" class="mt-4 text-sm text-center text-red-600">{{ error }}</p>
       </div>
     </div>
   </template>
   
   <script setup>
   import { ref } from 'vue';
+  import axios from 'axios';
+  import { useRouter } from 'vue-router';
   
-  const email = ref('');
+  const username = ref('');
   const password = ref('');
   const loading = ref(false);
+  const error = ref('');
+  const router = useRouter();
   
   const handleLogin = async () => {
     loading.value = true;
+    error.value = '';
+  
     try {
-      // Simulate login API call
-      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulated delay
-      alert('Login successful!');
-    } catch (error) {
-      console.error('Login failed:', error);
-      alert('Failed to login. Please try again.');
+      const response = await axios.post('http://localhost:8000/auth/login/', {
+        username: username.value,
+        password: password.value,
+      });
+  
+      const newAccessToken = response.data.access;
+      localStorage.setItem('authToken', newAccessToken);
+      router.push('/'); // Redirect to the main page
+    } catch (err) {
+      console.error('Login error:', err);
+      error.value = 'Invalid username or password. Please try again.';
     } finally {
       loading.value = false;
     }

@@ -112,9 +112,12 @@ const handlePost = async () => {
     formData.append('image', media.value); // Attach the image file if it exists
   }
 
+  const token = localStorage.getItem('authToken'); // Get the token from localStorage
+
   try {
     const response = await axios.post('http://localhost:8000/posts/create/', formData, {
       headers: {
+        'Authorization': `Bearer ${token}`, // Include the JWT token in the Authorization header
         'Content-Type': 'multipart/form-data', // Ensure the request is sent as multipart/form-data
       },
     });
@@ -126,8 +129,6 @@ const handlePost = async () => {
     text.value = '';
     media.value = null;
     mediaPreview.value = null;
-
-    alert('Post created successfully!');
   } catch (error) {
     console.error('Error creating post:', error.response ? error.response.data : error.message);
     alert('Failed to create post. Please try again.');

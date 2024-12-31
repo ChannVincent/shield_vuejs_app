@@ -46,8 +46,14 @@ const addPost = (newPost) => {
 
 // Fetch posts from the API
 const fetchPosts = async () => {
+  const token = localStorage.getItem('authToken');
+
   try {
-    const response = await axios.get('http://localhost:8000/posts/?commune_id=' + commune_id);
+    const response = await axios.get(`http://localhost:8000/posts/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     posts.value = response.data;
   } catch (error) {
     console.error('Failed to fetch posts:', error);
