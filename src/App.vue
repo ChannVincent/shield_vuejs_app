@@ -1,6 +1,5 @@
 <template>
   <div class="flex flex-col min-h-screen font-Roboto bg-gray-100">
-    <Navigation />
     <RouterView />
     <!-- Install Prompt -->
     <div v-if="showInstallPrompt" class="fixed bottom-4 right-4 bg-white shadow-lg rounded-md p-4 flex items-center space-x-4">
@@ -17,7 +16,6 @@
 
 <script setup>
 import { RouterView } from 'vue-router'
-import Navigation from '@/components/Navigation.vue'
 import { ref, onMounted } from 'vue';
 
 const installPromptEvent = ref(null);

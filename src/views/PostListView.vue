@@ -1,21 +1,24 @@
 <template>
-  <div class="container mx-auto py-4">
-    <div class="flex justify-center">
-      <!-- Wrapper for Post Form and Feed -->
-      <div class="w-full max-w-lg">
-        <!-- Post Form -->
-        <PostForm @createPost="addPost" />
+  <div>
+    <Navigation />
+    <div class="container mx-auto py-4">
+      <div class="flex justify-center">
+        <!-- Wrapper for Post Form and Feed -->
+        <div class="w-full max-w-lg">
+          <!-- Post Form -->
+          <PostForm @createPost="addPost" />
 
-        <!-- Spinner -->
-        <Spinner v-if="loading" />
+          <!-- Spinner -->
+          <Spinner v-if="loading" />
 
-        <!-- Feed -->
-        <div v-else class="space-y-4">
-          <PostItem
-            v-for="post in posts"
-            :key="post.id"
-            :post="post"
-          />
+          <!-- Feed -->
+          <div v-else class="space-y-4">
+            <PostItem
+              v-for="post in posts"
+              :key="post.id"
+              :post="post"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -24,6 +27,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import Navigation from '@/components/Navigation.vue'
 import PostForm from '@/components/PostForm.vue';
 import PostItem from '@/components/PostItem.vue';
 import Spinner from '@/components/Spinner.vue';
