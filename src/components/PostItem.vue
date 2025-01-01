@@ -45,12 +45,27 @@
       <div v-else class="p-2"></div>
     </div>
     
+    <!-- Like Button Section -->
+    <div class="flex items-center justify-between mt-4 pb-4">
+      <button
+        @click="toggleLike"
+        class="flex items-center text-gray-700 hover:text-red-500"
+      >
+        <span class="material-icons text-2xl">
+          {{ isLiked ? 'favorite' : 'favorite_border' }}
+        </span>
+        <span class="ml-2">{{ likeCount }}</span>
+      </button>
+    </div>
+
+    <!-- end sections -->
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
 import Chart from 'chart.js/auto';
+import axios from 'axios';
 
 const props = defineProps({
   post: Object,
@@ -60,8 +75,32 @@ const chartCanvas = ref(null); // Create a ref for the canvas
 const imageWidth = ref(0);
 const imageHeight = ref(0);
 
+// State for likes
+const isLiked = ref(props.post.is_liked);
+const likeCount = ref(props.post.like_count);
+
 const toggleImageExpand = () => {
   props.post.isExpanded = !props.post.isExpanded;
+};
+
+const toggleLike = async () => {
+  try {
+    const token = localStorage.getItem('authToken');
+    const response = await axios.post(`http://localhost:8000/posts/${props.post.id}/like/`, null, {
+      headers: {
+        'Authorization': `Bearer ${token}`, 
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    isLiked.value = response.data.liked;
+    likeCount.value = response.data.like_count;
+  } catch (error) {
+    console.error('Failed to toggle like:', error);
+    if (error.status == 401) {
+      localStorage.removeItem('authToken');
+      next('/login');
+    }
+  }
 };
 
 const loadImageDimensions = async (imageSrc) => {
