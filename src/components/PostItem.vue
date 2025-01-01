@@ -10,11 +10,16 @@
       <p class="text-gray-800 font-medium">{{ post.user_username }}</p>
     </div>
 
-    <!-- Like Button Section (Top Right) -->
-    <div
-      class="absolute top-4 right-4 flex items-center text-gray-700 hover:text-red-500 cursor-pointer"
-    >
-      <button @click="toggleLike" class="flex items-center">
+    <!-- Buttons Section (Top Right) -->
+    <div class="absolute top-4 right-4 flex items-center space-x-4 text-gray-700">
+      <!-- Comment Button -->
+      <button @click="navigateToComments" class="flex items-center hover:text-blue-500">
+        <span class="material-icons text-2xl">chat_bubble_outline</span>
+        <span class="ml-2">{{ post.comment_count }}</span>
+      </button>
+
+      <!-- Like Button -->
+      <button @click="toggleLike" class="flex items-center hover:text-red-500">
         <span class="material-icons text-2xl">
           {{ isLiked ? 'favorite' : 'favorite_border' }}
         </span>
@@ -100,6 +105,11 @@ const toggleLike = async () => {
       next('/login');
     }
   }
+};
+
+const navigateToComments = () => {
+  // Navigate to the comment section of the post
+  console.log(`Navigating to comments for post ID: ${props.post.id}`);
 };
 
 const loadImageDimensions = async (imageSrc) => {
