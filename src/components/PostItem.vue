@@ -1,7 +1,7 @@
 <template>
   <div class="bg-white shadow-md rounded-md pt-4 px-4 relative">
     <!-- User Section -->
-    <div v-if="post.user_username && post.user_image" class="flex items-center mb-4">
+    <div v-if="post.user_username && post.user_image" class="flex items-center mb-4 mr-28">
       <img
         :src="'http://localhost:8000' + post.user_image"
         alt="User profile"
@@ -13,7 +13,7 @@
     <!-- Buttons Section (Top Right) -->
     <div class="absolute top-4 right-4 flex items-center space-x-4 text-gray-700">
       <!-- Comment Button -->
-      <button @click="navigateToComments" class="flex items-center hover:text-blue-500">
+      <button @click="toggleComments" class="flex items-center hover:text-blue-500">
         <span class="material-icons text-2xl">chat_bubble_outline</span>
         <span class="ml-2">{{ post.comment_count }}</span>
       </button>
@@ -27,8 +27,13 @@
       </button>
     </div>
 
+    <!-- Title Section -->
+    <p class="text-lg mr-28" v-if="post.title">{{ post.title }}</p>
+
+    <!-- Comment Section -->
+    <CommentSection v-if="showComments" :postId="post.id" />
+
     <!-- Text Section -->
-    <p class="text-lg" v-if="post.title">{{ post.title }}</p>
     <p class="mt-3 ml-3" v-if="post.text">{{ post.text }}</p>
 
     <!-- Chart Section -->
@@ -70,6 +75,7 @@
 import { ref, onMounted } from 'vue';
 import Chart from 'chart.js/auto';
 import axios from 'axios';
+import CommentSection from '@/components/CommentSection.vue';
 
 const props = defineProps({
   post: Object,
@@ -78,6 +84,7 @@ const props = defineProps({
 const chartCanvas = ref(null); // Create a ref for the canvas
 const imageWidth = ref(0);
 const imageHeight = ref(0);
+const showComments = ref(false);
 
 // State for likes
 const isLiked = ref(props.post.is_liked);
@@ -85,6 +92,10 @@ const likeCount = ref(props.post.like_count);
 
 const toggleImageExpand = () => {
   props.post.isExpanded = !props.post.isExpanded;
+};
+
+const toggleComments = () => {
+  showComments.value = !showComments.value;
 };
 
 const toggleLike = async () => {
