@@ -23,11 +23,11 @@
     <div v-if="!post.image" class="pb-4"></div>
     <div v-if="post.image" class="mt-2">
       <img
-        :src="'http://localhost:8000/media/' + post.image"
+        :src="'http://localhost:8000/' + post.image"
         alt="Posted media"
         :class="{
           'w-full h-auto': imageWidth >= imageHeight,
-          'w-full aspect-square object-cover': imageWidth < imageHeight && !post.isExpanded,
+          'w-full aspect-video object-cover': imageWidth < imageHeight && !post.isExpanded,
           'w-full h-auto': imageWidth < imageHeight && post.isExpanded,
         }"
         class="rounded-md"
@@ -78,7 +78,7 @@ onMounted(async () => {
   // Load image dimensions
   if (props.post.image) {
     const { width, height } = await loadImageDimensions(
-      `http://localhost:8000/media/${props.post.image}`
+      `http://localhost:8000/${props.post.image}`
     );
     imageWidth.value = width;
     imageHeight.value = height;
