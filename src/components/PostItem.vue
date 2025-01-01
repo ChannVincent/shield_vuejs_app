@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white shadow-md rounded-md pt-4 px-4">
+  <div class="bg-white shadow-md rounded-md pt-4 px-4 relative">
     <!-- User Section -->
     <div v-if="post.user_username && post.user_image" class="flex items-center mb-4">
       <img
@@ -8,6 +8,18 @@
         class="w-10 h-10 rounded-full object-cover mr-3"
       />
       <p class="text-gray-800 font-medium">{{ post.user_username }}</p>
+    </div>
+
+    <!-- Like Button Section (Top Right) -->
+    <div
+      class="absolute top-4 right-4 flex items-center text-gray-700 hover:text-red-500 cursor-pointer"
+    >
+      <button @click="toggleLike" class="flex items-center">
+        <span class="material-icons text-2xl">
+          {{ isLiked ? 'favorite' : 'favorite_border' }}
+        </span>
+        <span class="ml-2">{{ likeCount }}</span>
+      </button>
     </div>
 
     <!-- Text Section -->
@@ -43,19 +55,6 @@
         </span>
       </button>
       <div v-else class="p-2"></div>
-    </div>
-    
-    <!-- Like Button Section -->
-    <div class="flex items-center justify-between mt-4 pb-4">
-      <button
-        @click="toggleLike"
-        class="flex items-center text-gray-700 hover:text-red-500"
-      >
-        <span class="material-icons text-2xl">
-          {{ isLiked ? 'favorite' : 'favorite_border' }}
-        </span>
-        <span class="ml-2">{{ likeCount }}</span>
-      </button>
     </div>
 
     <!-- end sections -->
