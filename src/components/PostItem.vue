@@ -1,5 +1,15 @@
 <template>
   <div class="bg-white shadow-md rounded-md pt-4 px-4">
+    <!-- User Section -->
+    <div v-if="post.user_username && post.user_image" class="flex items-center mb-4">
+      <img
+        :src="'http://localhost:8000' + post.user_image"
+        alt="User profile"
+        class="w-10 h-10 rounded-full object-cover mr-3"
+      />
+      <p class="text-gray-800 font-medium">{{ post.user_username }}</p>
+    </div>
+
     <!-- Text Section -->
     <p class="text-lg" v-if="post.title">{{ post.title }}</p>
     <p class="mt-3 ml-3" v-if="post.text">{{ post.text }}</p>

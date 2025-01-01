@@ -106,7 +106,6 @@ const handlePost = async () => {
 
   const formData = new FormData();
   formData.append('commune', 2); // Commune ID set to 2
-  formData.append('title', text.value.trim().slice(0, 50)); // Use first 50 characters as the title
   formData.append('text', text.value); // Post text
   if (media.value) {
     formData.append('image', media.value); // Attach the image file if it exists
