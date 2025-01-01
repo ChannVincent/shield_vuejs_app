@@ -132,6 +132,10 @@ const handlePost = async () => {
   } catch (error) {
     console.error('Error creating post:', error.response ? error.response.data : error.message);
     alert('Failed to create post. Please try again.');
+    if (error.status == 401) {
+      localStorage.removeItem('authToken');
+      next('/login');
+    }
   }
 };
 

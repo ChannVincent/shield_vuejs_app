@@ -56,6 +56,10 @@ const fetchPosts = async () => {
     });
     posts.value = response.data;
   } catch (error) {
+    if (error.status == 401) {
+      localStorage.removeItem('authToken');
+      next('/login');
+    }
     console.error('Failed to fetch posts:', error);
   } finally {
     loading.value = false;
