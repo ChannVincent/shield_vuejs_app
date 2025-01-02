@@ -16,16 +16,18 @@
         :class="{ 'self-end items-end': comment.from_me, 'self-start items-start': !comment.from_me }"
       >
         <div
-          class="flex items-center space-x-2 mx-2"
+          class="flex items-center mx-2"
           :class="{ 'flex-row-reverse': comment.from_me }"
         >
           <img
             v-if="comment.user_image"
             :src="'http://localhost:8000/' + comment.user_image"
             alt="User image"
-            class="w-6 h-6 rounded-full border border-gray-300"
+            class="w-6 h-6 rounded-full border border-gray-300 m-2"
           />
-          <p class="text-sm text-gray-500 font-semibold px-1">{{ comment.user }}</p>
+          <p class="text-sm text-gray-500 font-semibold">{{ comment.user }}</p>
+          <!-- <RankIcon :rank="comment.user_rank" /> -->
+          <RankIcon :rank="4" />
         </div>
         <div
           class="p-3 rounded-lg shadow-md max-w-sm"
@@ -68,6 +70,7 @@
 <script setup>
 import { ref, onMounted, watch, nextTick } from 'vue';
 import axios from 'axios';
+import RankIcon from '@/components/RankIcon.vue';
 
 // Props
 const props = defineProps({
