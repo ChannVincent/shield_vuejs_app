@@ -16,6 +16,17 @@
         <p class="text-sm text-gray-200 mb-1 font-semibold">{{ comment.user }}</p>
         <p class="text-white">{{ comment.text }}</p>
       </div>
+
+      <!-- Last Updated and Refresh Button -->
+      <div class="flex justify-between items-center text-sm text-gray-400 px-2">
+        <span class="pb-2">Mise à jour à {{ lastUpdated }} - rafraîchir:</span>
+        <button
+          @click="refreshComments"
+          class="px-1 text-gray-400 hover:text-blue-600 focus:outline-none"
+        >
+          <span class="material-icons text-md">refresh</span>
+        </button>
+      </div>
     </div>
 
     <!-- New Comment Form -->
@@ -49,6 +60,7 @@ const props = defineProps({
 const comments = ref([]);
 const newComment = ref('');
 const commentContainer = ref(null); // Reference for the comment container
+const lastUpdated = ref('Never'); // Tracks the last updated time
 const emit = defineEmits(['onCommentCountChanged']);
 
 // Scroll to the bottom of the comment container
@@ -56,9 +68,14 @@ const scrollToBottom = () => {
   nextTick(() => {
     if (commentContainer.value) {
       commentContainer.value.scrollTop = commentContainer.value.scrollHeight;
-      console.log("Scrolled to bottom:", commentContainer.value.scrollTop);
     }
   });
+};
+
+// Update the last updated time
+const updateLastUpdated = () => {
+  const now = new Date();
+  lastUpdated.value = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', });
 };
 
 // Load comments from API
@@ -76,11 +93,17 @@ const loadComments = async () => {
     comments.value = response.data.comments;
     emit('onCommentCountChanged', response.data.comments.length);
 
-    // Ensure scrolling to bottom after comments load
+    // Update the last updated time and scroll to bottom
+    updateLastUpdated();
     scrollToBottom();
   } catch (error) {
     console.error('Failed to load comments:', error.response?.data || error.message);
   }
+};
+
+// Refresh comments
+const refreshComments = async () => {
+  await loadComments();
 };
 
 // Submit a new comment
@@ -101,9 +124,6 @@ const submitComment = async () => {
     );
     newComment.value = ''; // Clear the input field
     await loadComments(); // Reload comments to include the new one
-
-    // Scroll to bottom after adding a comment
-    scrollToBottom();
   } catch (error) {
     console.error('Failed to submit comment:', error.response?.data || error.message);
   }
