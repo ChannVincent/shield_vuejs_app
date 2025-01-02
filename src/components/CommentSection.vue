@@ -45,6 +45,7 @@ const props = defineProps({
 // States
 const comments = ref([]);
 const newComment = ref('');
+const emit = defineEmits(['onCommentCountChanged']);
 
 // Load comments from API
 const loadComments = async () => {
@@ -58,6 +59,7 @@ const loadComments = async () => {
       }
     );
     comments.value = response.data.comments; // Update to use the 'comments' field from API
+    emit('onCommentCountChanged', response.data.comments.length);
   } catch (error) {
     console.error('Failed to load comments:', error.response?.data || error.message);
   }
@@ -79,8 +81,8 @@ const submitComment = async () => {
         },
       }
     );
-    comments.value.push(response.data); // Add new comment to the list
     newComment.value = ''; // Clear the input field
+    loadComments()
   } catch (error) {
     console.error('Failed to submit comment:', error.response?.data || error.message);
   }

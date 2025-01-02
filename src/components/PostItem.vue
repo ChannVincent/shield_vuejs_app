@@ -15,8 +15,8 @@
       <!-- Comment Button -->
       <button @click="toggleComments" class="flex items-center hover:text-blue-500">
         <span v-if="!showComments" class="material-icons text-2xl">chat_bubble_outline</span>
-        <span v-if="!showComments" class="ml-2">{{ post.comment_count }}</span>
         <span v-else class="material-icons text-2xl">chat_bubble</span>
+        <span class="ml-2">{{ commentCount }}</span>
       </button>
 
       <!-- Like Button -->
@@ -32,7 +32,7 @@
     <p class="text-lg mr-28" v-if="post.title">{{ post.title }}</p>
 
     <!-- Comment Section -->
-    <CommentSection v-if="showComments" :postId="post.id" />
+    <CommentSection v-if="showComments" @onCommentCountChanged="onCommentCountChanged" :postId="post.id" />
 
     <!-- Text Section -->
     <p class="mt-3 ml-3" v-if="post.text">{{ post.text }}</p>
@@ -90,6 +90,7 @@ const showComments = ref(false);
 // State for likes
 const isLiked = ref(props.post.is_liked);
 const likeCount = ref(props.post.like_count);
+const commentCount = ref(props.post.comment_count);
 
 const toggleImageExpand = () => {
   props.post.isExpanded = !props.post.isExpanded;
@@ -98,6 +99,10 @@ const toggleImageExpand = () => {
 const toggleComments = () => {
   showComments.value = !showComments.value;
 };
+
+const onCommentCountChanged = (count) => {
+  commentCount.value = count
+}
 
 const toggleLike = async () => {
   try {
@@ -117,11 +122,6 @@ const toggleLike = async () => {
       next('/login');
     }
   }
-};
-
-const navigateToComments = () => {
-  // Navigate to the comment section of the post
-  console.log(`Navigating to comments for post ID: ${props.post.id}`);
 };
 
 const loadImageDimensions = async (imageSrc) => {
