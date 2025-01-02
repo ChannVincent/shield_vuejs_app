@@ -158,7 +158,7 @@ onMounted(async () => {
         labels: years,
         datasets: [
           {
-            label: props.post.text,
+            label: props.post.title,
             data: factsValues,
             backgroundColor: props.post.color,
             borderColor: props.post.color,

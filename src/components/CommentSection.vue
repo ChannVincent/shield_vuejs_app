@@ -8,13 +8,31 @@
       <div v-if="comments.length === 0" class="flex justify-center items-center h-full">
         <p class="text-gray-500 italic ml-5">No message yet, send the first message!</p>
       </div>
+      
       <div
         v-for="comment in comments"
         :key="comment.id"
-        class="mb-3 p-3 bg-blue-500 text-white rounded-lg shadow-md max-w-sm self-start"
+        class="mb-3 flex flex-col"
+        :class="{ 'self-end items-end': comment.from_me, 'self-start items-start': !comment.from_me }"
       >
-        <p class="text-sm text-gray-200 mb-1 font-semibold">{{ comment.user }}</p>
-        <p class="text-white">{{ comment.text }}</p>
+        <div
+          class="flex items-center space-x-2 mx-2"
+          :class="{ 'flex-row-reverse': comment.from_me }"
+        >
+          <img
+            v-if="comment.user_image"
+            :src="'http://localhost:8000/' + comment.user_image"
+            alt="User image"
+            class="w-6 h-6 rounded-full border border-gray-300"
+          />
+          <p class="text-sm text-gray-500 font-semibold px-1">{{ comment.user }}</p>
+        </div>
+        <div
+          class="p-3 rounded-lg shadow-md max-w-sm"
+          :class="{ 'bg-blue-500 text-white': comment.from_me, 'bg-gray-300 text-gray-800': !comment.from_me }"
+        >
+          <p class="break-words">{{ comment.text }}</p>
+        </div>
       </div>
 
       <!-- Last Updated and Refresh Button -->
@@ -75,7 +93,11 @@ const scrollToBottom = () => {
 // Update the last updated time
 const updateLastUpdated = () => {
   const now = new Date();
-  lastUpdated.value = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', });
+  lastUpdated.value = now.toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  });
 };
 
 // Load comments from API
@@ -146,10 +168,11 @@ onMounted(() => {
 }
 
 /* Bubble styling for messages */
-.bg-blue-500 {
-  position: relative;
+.bg-blue-500,
+.bg-gray-300 {
   padding: 1rem;
   margin: 0.5rem;
   border-radius: 10px;
+  word-wrap: break-word;
 }
 </style>
