@@ -1,14 +1,17 @@
 <template>
   <div class="mt-4 border-t border-gray-300 pt-4">
     <!-- Chat-style Comments -->
-    <div class="h-64 overflow-y-auto mb-4 bg-gray-100 rounded-lg">
+    <div class="h-64 overflow-y-auto mb-4 bg-gray-100 rounded-lg flex flex-col items-start justify-start">
+      <div v-if="comments.length === 0" class="flex justify-center items-center h-full">
+        <p class="text-gray-500 italic ml-5">No message yet, send the first message!</p>
+      </div>
       <div
         v-for="comment in comments"
         :key="comment.id"
-        class="mb-3 p-3 bg-gray-100 rounded-md shadow-sm"
+        class="mb-3 p-3 bg-blue-500 text-white rounded-lg shadow-md max-w-sm self-start"
       >
-        <p class="text-sm text-gray-500 mb-1">{{ comment.user }}</p>
-        <p class="text-gray-700">{{ comment.text }}</p>
+        <p class="text-sm text-gray-200 mb-1 font-semibold">{{ comment.user }}</p>
+        <p class="text-white">{{ comment.text }}</p>
       </div>
     </div>
 
@@ -87,3 +90,18 @@ onMounted(() => {
   loadComments();
 });
 </script>
+
+<style>
+/* Center message container when no messages exist */
+.h-64 .flex {
+  text-align: center;
+}
+
+/* Bubble styling for messages */
+.bg-blue-500 {
+  position: relative;
+  padding: 1rem;
+  margin: 0.5rem;
+  border-radius: 10px;
+}
+</style>
