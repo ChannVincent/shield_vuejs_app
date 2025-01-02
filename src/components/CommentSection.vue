@@ -1,7 +1,10 @@
 <template>
   <div class="mt-4 border-t border-gray-300 pt-4">
     <!-- Chat-style Comments -->
-    <div class="h-64 overflow-y-auto mb-4 bg-gray-100 rounded-lg flex flex-col items-start justify-start">
+    <div
+      ref="commentContainer"
+      class="h-64 overflow-y-auto mb-4 bg-gray-100 rounded-lg flex flex-col items-start justify-start"
+    >
       <div v-if="comments.length === 0" class="flex justify-center items-center h-full">
         <p class="text-gray-500 italic ml-5">No message yet, send the first message!</p>
       </div>
@@ -34,7 +37,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch, nextTick } from 'vue';
 import axios from 'axios';
 
 // Props
@@ -45,21 +48,36 @@ const props = defineProps({
 // States
 const comments = ref([]);
 const newComment = ref('');
+const commentContainer = ref(null); // Reference for the comment container
 const emit = defineEmits(['onCommentCountChanged']);
+
+// Scroll to the bottom of the comment container
+const scrollToBottom = () => {
+  nextTick(() => {
+    if (commentContainer.value) {
+      commentContainer.value.scrollTop = commentContainer.value.scrollHeight;
+      console.log("Scrolled to bottom:", commentContainer.value.scrollTop);
+    }
+  });
+};
 
 // Load comments from API
 const loadComments = async () => {
   try {
     const token = localStorage.getItem('authToken');
     const response = await axios.get(
-      `http://localhost:8000/posts/${props.postId}/comments/`, {
+      `http://localhost:8000/posts/${props.postId}/comments/`,
+      {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       }
     );
-    comments.value = response.data.comments; // Update to use the 'comments' field from API
+    comments.value = response.data.comments;
     emit('onCommentCountChanged', response.data.comments.length);
+
+    // Ensure scrolling to bottom after comments load
+    scrollToBottom();
   } catch (error) {
     console.error('Failed to load comments:', error.response?.data || error.message);
   }
@@ -71,7 +89,7 @@ const submitComment = async () => {
 
   try {
     const token = localStorage.getItem('authToken');
-    const response = await axios.post(
+    await axios.post(
       `http://localhost:8000/posts/${props.postId}/comment/`,
       { text: newComment.value },
       {
@@ -82,14 +100,22 @@ const submitComment = async () => {
       }
     );
     newComment.value = ''; // Clear the input field
-    loadComments()
+    await loadComments(); // Reload comments to include the new one
+
+    // Scroll to bottom after adding a comment
+    scrollToBottom();
   } catch (error) {
     console.error('Failed to submit comment:', error.response?.data || error.message);
   }
 };
 
+// Watch for changes in the comments array and scroll to bottom
+watch(comments, scrollToBottom);
+
+// On mounted, load comments and scroll to bottom
 onMounted(() => {
   loadComments();
+  scrollToBottom();
 });
 </script>
 
