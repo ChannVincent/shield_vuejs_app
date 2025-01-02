@@ -14,8 +14,9 @@
     <div class="absolute top-4 right-4 flex items-center space-x-4 text-gray-700">
       <!-- Comment Button -->
       <button @click="toggleComments" class="flex items-center hover:text-blue-500">
-        <span class="material-icons text-2xl">chat_bubble_outline</span>
-        <span class="ml-2">{{ post.comment_count }}</span>
+        <span v-if="!showComments" class="material-icons text-2xl">chat_bubble_outline</span>
+        <span v-if="!showComments" class="ml-2">{{ post.comment_count }}</span>
+        <span v-else class="material-icons text-2xl">chat_bubble</span>
       </button>
 
       <!-- Like Button -->
