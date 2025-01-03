@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import PostListView from '../views/PostListView.vue'
 import LoginView from '../views/LoginView.vue'
+import RegisterView from '../views/RegisterView.vue'
 
 
 const isAuthenticated = () => {
@@ -21,6 +22,11 @@ const router = createRouter({
       path: '/login',
       name: 'LoginView',
       component: LoginView
+    },
+    {
+      path: '/register',
+      name: 'RegisterView',
+      component: RegisterView
     },
   ]
 });
