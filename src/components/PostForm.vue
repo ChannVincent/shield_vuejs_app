@@ -2,7 +2,7 @@
   <div class="bg-white shadow-md rounded-md p-4 mb-6">
     <textarea
       v-model="text"
-      placeholder="What's on your mind?"
+      placeholder="Je dénonce une injustice !"
       class="w-full p-2 border rounded-md resize-none focus:outline-none focus:ring focus:ring-blue-300"
       rows="3"
     ></textarea>

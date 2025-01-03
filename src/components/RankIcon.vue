@@ -26,44 +26,42 @@
   
   // Define a computed property to determine icon and color based on rank
   const iconData = computed(() => {
-    let icon = 'military_tech';  // 'military_tech', 'workspace_premium', 'social_leaderboard'
-    let iconColor = 'gray'; // Default color
+    let icon = '';  // 'military_tech', 'workspace_premium', 'social_leaderboard'
+    let iconColor = ''; // Default color
     
     if (props.rank === 1) {
-      iconColor = 'gray';
-      icon = 'military_tech'; 
     } 
     else if (props.rank === 2) {
       iconColor = 'gray';
-      icon = 'workspace_premium'; 
+      icon = 'military_tech';
     } 
     else if (props.rank === 3) {
       iconColor = 'gray';
-      icon = 'social_leaderboard'; 
+      icon = 'workspace_premium';
     } 
     else if (props.rank === 4) {
       iconColor = '#FFC300';
-      icon = 'military_tech'; 
+      icon = 'military_tech';
     } 
     else if (props.rank === 5) {
       iconColor = '#FFC300';
-      icon = 'workspace_premium'; 
+      icon = 'workspace_premium';
     } 
     else if (props.rank === 6) {
-      iconColor = '#FFC300';
-      icon = 'social_leaderboard'; 
+      iconColor = '#000000';
+      icon = 'military_tech'; 
     }
     else if (props.rank === 7) {
       iconColor = '#000000';
+      icon = 'workspace_premium';
+    } 
+    else if (props.rank === 8) { 
+      iconColor = '#008A8A';
       icon = 'military_tech'; 
     } 
-    else if (props.rank === 8) {
-      iconColor = '#000000';
-      icon = 'workspace_premium'; 
-    } 
     else if (props.rank === 9) {
-      iconColor = '#000000';
-      icon = 'social_leaderboard'; 
+      iconColor = '#008A8A';
+      icon = 'workspace_premium'; 
     }
   
     return { icon, iconColor };
