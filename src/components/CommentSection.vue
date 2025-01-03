@@ -23,11 +23,10 @@
             v-if="comment.user_image"
             :src="'http://localhost:8000/' + comment.user_image"
             alt="User image"
-            class="w-6 h-6 rounded-full border border-gray-300 m-2"
+            class="w-6 h-6 rounded-full border border-gray-300 mx-2 mt-1"
           />
           <p class="text-sm text-gray-500 font-semibold">{{ comment.user }}</p>
-          <!-- <RankIcon :rank="comment.user_rank" /> -->
-          <RankIcon :rank="4" />
+          <RankIcon :rank="comment.user_rank" />
         </div>
         <div
           class="p-3 rounded-lg shadow-md max-w-sm"

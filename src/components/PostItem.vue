@@ -8,6 +8,8 @@
         class="w-10 h-10 rounded-full object-cover mr-3"
       />
       <p class="text-gray-800 font-medium">{{ post.user_username }}</p>
+      <RankIcon :rank="post.user_rank" />
+      <p class="text-gray-400 text-xs">rang {{ post.user_rank }}</p>
     </div>
 
     <!-- Buttons Section (Top Right) -->
@@ -77,6 +79,7 @@ import { ref, onMounted } from 'vue';
 import Chart from 'chart.js/auto';
 import axios from 'axios';
 import CommentSection from '@/components/CommentSection.vue';
+import RankIcon from '@/components/RankIcon.vue';
 
 const props = defineProps({
   post: Object,
