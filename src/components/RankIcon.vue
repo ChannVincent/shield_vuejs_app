@@ -1,6 +1,6 @@
 <template>
     <span 
-      :class="`material-icons ${sizeClass}`" 
+      :class="`material-icons ${sizeClass} ${otherClass}`" 
       :style="{ color: iconColor }"
     >
       {{ icon }}
@@ -28,8 +28,10 @@
   const iconData = computed(() => {
     let icon = '';  // 'military_tech', 'workspace_premium', 'social_leaderboard'
     let iconColor = ''; // Default color
-    
+    let other = '';
+
     if (props.rank === 1) {
+      other = 'p-1'
     } 
     else if (props.rank === 2) {
       iconColor = 'gray';
@@ -64,12 +66,13 @@
       icon = 'workspace_premium'; 
     }
   
-    return { icon, iconColor };
+    return { icon, iconColor, other };
   });
   
   // Use computed values for the icon and color
   const icon = iconData.value.icon;
   const iconColor = iconData.value.iconColor;
   const sizeClass = `text-${props.size}`;
+  const otherClass = iconData.value.other;
   </script>
   
