@@ -78,7 +78,8 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import Chart from 'chart.js/auto';
-import { baseUrl, toggleLikePost } from '@/api/post';
+import { toggleLikePost } from '@/api/post';
+import { baseUrl } from '@/api/base';
 import CommentSection from '@/components/CommentSection.vue';
 import RankIcon from '@/components/RankIcon.vue';
 

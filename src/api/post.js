@@ -1,7 +1,6 @@
 // api.js
 import axios from 'axios';
-
-export const baseUrl = 'http://localhost:8000'
+import { baseUrl } from './base';
 
 const apiClient = axios.create({
   baseURL: baseUrl,

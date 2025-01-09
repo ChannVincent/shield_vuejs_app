@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-const baseUrl = 'http://localhost:8000';
+import { baseUrl } from './base';
 
 export const login = async (username, password) => {
   const response = await axios.post(`${baseUrl}/auth/login/`, {
