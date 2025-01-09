@@ -31,7 +31,7 @@ import Navigation from '@/components/Navigation.vue'
 import PostForm from '@/components/PostForm.vue';
 import PostItem from '@/components/PostItem.vue';
 import Spinner from '@/components/Spinner.vue';
-import { fetchPosts as fetchPostsApi } from '@/api';
+import { fetchPosts as fetchPostsApi } from '@/api/post';
 
 // TODO put in store
 const commune_id = 2;

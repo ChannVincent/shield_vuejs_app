@@ -64,7 +64,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
-import { createPost } from '@/api';
+import { createPost } from '@/api/post';
 
 // Props and emits
 const emit = defineEmits(['createPost']);

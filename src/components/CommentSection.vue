@@ -68,7 +68,7 @@
 
 <script setup>
 import { ref, onMounted, watch, nextTick } from 'vue';
-import { fetchComments, submitNewComment } from '@/api';
+import { fetchComments, submitNewComment } from '@/api/post';
 import RankIcon from '@/components/RankIcon.vue';
 
 // Props
