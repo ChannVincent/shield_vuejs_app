@@ -68,7 +68,7 @@
 
 <script setup>
 import { ref, onMounted, watch, nextTick } from 'vue';
-import axios from 'axios';
+import { fetchComments, submitNewComment } from '@/api';
 import RankIcon from '@/components/RankIcon.vue';
 
 // Props
@@ -105,18 +105,8 @@ const updateLastUpdated = () => {
 // Load comments from API
 const loadComments = async () => {
   try {
-    const token = localStorage.getItem('authToken');
-    const response = await axios.get(
-      `http://localhost:8000/posts/${props.postId}/comments/`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    comments.value = response.data.comments;
-    emit('onCommentCountChanged', response.data.comments.length);
-
+    comments.value = await fetchComments(props.postId);
+    emit('onCommentCountChanged', comments.value.length);
     // Update the last updated time and scroll to bottom
     updateLastUpdated();
     scrollToBottom();
@@ -133,19 +123,8 @@ const refreshComments = async () => {
 // Submit a new comment
 const submitComment = async () => {
   if (!newComment.value.trim()) return;
-
   try {
-    const token = localStorage.getItem('authToken');
-    await axios.post(
-      `http://localhost:8000/posts/${props.postId}/comment/`,
-      { text: newComment.value },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      }
-    );
+    await submitNewComment(props.postId, newComment.value);
     newComment.value = ''; // Clear the input field
     await loadComments(); // Reload comments to include the new one
   } catch (error) {

@@ -1,13 +1,14 @@
 <template>
   <div class="bg-white shadow-md rounded-md pt-4 px-4 relative">
     <!-- User Section -->
-    <div v-if="post.user_username && post.user_image" class="flex items-center mb-4 mr-28">
+    <div v-if="post.user_username || post.user_image" class="flex items-center mb-4 mr-28">
       <img
-        :src="'http://localhost:8000' + post.user_image"
+        v-if="post.user_image"
+        :src="baseUrl + post.user_image"
         alt="User profile"
         class="w-10 h-10 rounded-full object-cover mr-3"
       />
-      <p class="text-gray-800 font-medium">{{ post.user_username }}</p>
+      <p v-if="post.user_username" class="text-gray-800 font-medium">{{ post.user_username }}</p>
       <RankIcon :rank="post.user_rank" />
       <p class="text-gray-400 text-xs">rang {{ post.user_rank }}</p>
     </div>
@@ -48,7 +49,7 @@
     <div v-if="!post.image" class="pb-4"></div>
     <div v-if="post.image" class="mt-2">
       <img
-        :src="'http://localhost:8000/' + post.image"
+        :src="baseUrl + post.image"
         alt="Posted media"
         :class="{
           'w-full h-auto': imageWidth >= imageHeight,
@@ -77,7 +78,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import Chart from 'chart.js/auto';
-import axios from 'axios';
+import { baseUrl, toggleLikePost } from '@/api';
 import CommentSection from '@/components/CommentSection.vue';
 import RankIcon from '@/components/RankIcon.vue';
 
@@ -85,7 +86,7 @@ const props = defineProps({
   post: Object,
 });
 
-const chartCanvas = ref(null); // Create a ref for the canvas
+const chartCanvas = ref(null);
 const imageWidth = ref(0);
 const imageHeight = ref(0);
 const showComments = ref(false);
@@ -109,19 +110,12 @@ const onCommentCountChanged = (count) => {
 
 const toggleLike = async () => {
   try {
-    const token = localStorage.getItem('authToken');
-    const response = await axios.post(`http://localhost:8000/posts/${props.post.id}/like/`, null, {
-      headers: {
-        'Authorization': `Bearer ${token}`, 
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    isLiked.value = response.data.liked;
-    likeCount.value = response.data.like_count;
+    const data = await toggleLikePost(props.post.id);
+    isLiked.value = data.liked;
+    likeCount.value = data.like_count;
   } catch (error) {
-    console.error('Failed to toggle like:', error);
-    if (error.status == 401) {
-      localStorage.removeItem('authToken');
+    console.error(error.message);
+    if (error.message === 'Unauthorized') {
       next('/login');
     }
   }
@@ -141,7 +135,7 @@ onMounted(async () => {
   // Load image dimensions
   if (props.post.image) {
     const { width, height } = await loadImageDimensions(
-      `http://localhost:8000/${props.post.image}`
+      `${baseUrl}/${props.post.image}`
     );
     imageWidth.value = width;
     imageHeight.value = height;

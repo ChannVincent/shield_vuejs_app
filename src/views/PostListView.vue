@@ -31,7 +31,7 @@ import Navigation from '@/components/Navigation.vue'
 import PostForm from '@/components/PostForm.vue';
 import PostItem from '@/components/PostItem.vue';
 import Spinner from '@/components/Spinner.vue';
-import axios from 'axios';
+import { fetchPosts as fetchPostsApi } from '@/api';
 
 // TODO put in store
 const commune_id = 2;
@@ -46,21 +46,13 @@ const addPost = (newPost) => {
 
 // Fetch posts from the API
 const fetchPosts = async () => {
-  const token = localStorage.getItem('authToken');
-
   try {
-    const response = await axios.get(`http://localhost:8000/posts/`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    posts.value = response.data;
+    posts.value = await fetchPostsApi();
   } catch (error) {
-    if (error.status == 401) {
-      localStorage.removeItem('authToken');
+    console.error(error.message);
+    if (error.message === 'Unauthorized') {
       next('/login');
     }
-    console.error('Failed to fetch posts:', error);
   } finally {
     loading.value = false;
   }

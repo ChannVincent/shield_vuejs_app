@@ -39,8 +39,8 @@
   
   <script setup>
   import { ref } from 'vue';
-  import axios from 'axios';
   import { useRouter } from 'vue-router';
+  import { login } from '@/authApi';
   
   const username = ref('');
   const password = ref('');
@@ -53,13 +53,8 @@
     error.value = '';
   
     try {
-      const response = await axios.post('http://localhost:8000/auth/login/', {
-        username: username.value,
-        password: password.value,
-      });
-  
-      const newAccessToken = response.data.access;
-      localStorage.setItem('authToken', newAccessToken);
+      const { access } = await login(username.value, password.value);
+      localStorage.setItem('authToken', access);
       router.push('/'); // Redirect to the main page
     } catch (err) {
       console.error('Login error:', err);

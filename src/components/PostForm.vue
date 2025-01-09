@@ -64,7 +64,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
-import axios from 'axios';
+import { createPost } from '@/api';
 
 // Props and emits
 const emit = defineEmits(['createPost']);
@@ -104,35 +104,18 @@ const handlePost = async () => {
     return;
   }
 
-  const formData = new FormData();
-  formData.append('commune', 2); // Commune ID set to 2
-  formData.append('text', text.value); // Post text
-  if (media.value) {
-    formData.append('image', media.value); // Attach the image file if it exists
-  }
-
-  const token = localStorage.getItem('authToken'); // Get the token from localStorage
-
   try {
-    const response = await axios.post('http://localhost:8000/posts/create/', formData, {
-      headers: {
-        'Authorization': `Bearer ${token}`, // Include the JWT token in the Authorization header
-        'Content-Type': 'multipart/form-data', // Ensure the request is sent as multipart/form-data
-      },
-    });
-
-    // Emit the created post to the parent component
-    emit('createPost', { id: response.data.post_id, ...response.data });
-
+    const response = await createPost(text.value, media.value); // Call API function
+    // Emit response to parent
+    emit('createPost', { id: response.post_id, ...response }); 
     // Clear the form
     text.value = '';
     media.value = null;
     mediaPreview.value = null;
   } catch (error) {
-    console.error('Error creating post:', error.response ? error.response.data : error.message);
+    console.error(error.message);
     alert('Failed to create post. Please try again.');
-    if (error.status == 401) {
-      localStorage.removeItem('authToken');
+    if (error.message === 'Unauthorized') {
       next('/login');
     }
   }
