@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Navigation />
+    <Navigation :title="title"/>
     <div class="container mx-auto py-4">
       <div class="flex justify-center">
         <!-- Wrapper for Post Form and Feed -->
@@ -38,6 +38,7 @@ const commune_id = 2;
 
 const posts = ref([]);
 const loading = ref(true);
+const title = localStorage.getItem('commune') ?? 'Nom commune'
 
 // Add new post to the posts array
 const addPost = (newPost) => {

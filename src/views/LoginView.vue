@@ -26,9 +26,17 @@
           <button
             type="submit"
             :disabled="loading"
-            class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+            class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring focus:ring-blue-500 focus:ring-opacity-50 flex items-center justify-center space-x-2"
           >
-            <span v-if="loading">Logging in...</span>
+            <!-- When Loading -->
+            <template v-if="loading">
+              <span>
+                <SpinnerWaiting color="text-white" />
+              </span>
+              <span>Logging in...</span>
+            </template>
+
+            <!-- Default State -->
             <span v-else>Login</span>
           </button>
         </form>
@@ -41,6 +49,7 @@
   import { ref } from 'vue';
   import { useRouter } from 'vue-router';
   import { login } from '@/api/auth';
+  import SpinnerWaiting from '@/components/SpinnerWaiting.vue';
   
   const username = ref('');
   const password = ref('');
