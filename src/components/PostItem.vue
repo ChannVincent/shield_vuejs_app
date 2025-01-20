@@ -4,7 +4,7 @@
     <div v-if="post.user_username || post.user_image" class="flex items-center mb-4 mr-28">
       <img
         v-if="post.user_image"
-        :src="baseUrl + post.user_image"
+        :src="post.user_image"
         alt="User profile"
         class="w-10 h-10 rounded-full object-cover mr-3"
       />
@@ -49,7 +49,7 @@
     <div v-if="!post.image" class="pb-4"></div>
     <div v-if="post.image" class="mt-2">
       <img
-        :src="baseUrl + post.image"
+        :src="post.image"
         alt="Posted media"
         :class="{
           'w-full h-auto': imageWidth >= imageHeight,
@@ -79,7 +79,6 @@
 import { ref, onMounted } from 'vue';
 import Chart from 'chart.js/auto';
 import { toggleLikePost } from '@/api/post';
-import { baseUrl } from '@/api/base';
 import CommentSection from '@/components/CommentSection.vue';
 import RankIcon from '@/components/RankIcon.vue';
 
@@ -136,7 +135,7 @@ onMounted(async () => {
   // Load image dimensions
   if (props.post.image) {
     const { width, height } = await loadImageDimensions(
-      `${baseUrl}/${props.post.image}`
+      `${props.post.image}`
     );
     imageWidth.value = width;
     imageHeight.value = height;
